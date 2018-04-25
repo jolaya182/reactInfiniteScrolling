@@ -1,0 +1,20 @@
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+td{
+  text-align: center;
+}
+
+.specialTr{
+  position: "fixed";
+  border:'1px solid black';
+  background-Color: "grey",;   
+  width:"100%";
+  height:"30px";
+   font:"5px";
+  margin:"0px 0px";
+  display: "block"
+}

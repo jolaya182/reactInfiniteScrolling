@@ -1,30 +1,58 @@
 import React, { Component } from "react";
 import ReactDom from "react-dom";
+
+import {pages} from "./styless.css";
 const styles = {
-  box: {
-    width: '350px',
+  r:{
+    align:"center",
+    marginTop: "35px",
     border: "solid thin gray",
-    left: "37%",
+  },
+  f:{
+    position: "fixed",
+    border:'1px solid black',
+    backgroundColor: "grey",    
+    width:"100%",
+    height:"30px",
+    // font:"5px",
+    margin:"0px 0px 0px 0px",
+    display: "block",
+    textAlign:'center'
+
+
+  },
+  body:{
+    padding:'0px',
+    margin: "0px"
+  },
+  table:{
+
+    padding:'0px',
+    display: "table",
+    width:"100%",
+    margin: "0px"
+  },
+  box: {
+    width: '400px',
+    border: "solid thin gray",
+    // left: "37%",
     padding: "10px",
-    position: "relative",
-    margin: "15px"
+    // position: "relative",
+    margin: "20px",
+    align:"center"
   },
   loading: {
     backgroundColor: "aquamarine",
-    padding: "10px",
-    width: "350px",
-    left: "34%",
-    position: "relative",
-    margin: "52px"
+
   }
 }
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      total: 6,       //total of amount of data units allowed
+      total: 1000,       //total of amount of data units allowed
       currentCount: 0, //current amount of data units in the application
-      offset: 3,      //data units allowed per request on updates
+      offset: 500,      //data units allowed per request on updates
       list: [],       //data structure to hold all data units
       isFetching: false // if there is a xmlhttprequest happening
     }
@@ -39,10 +67,14 @@ class App extends Component {
   }
 
   componentWillMount() {
+
+ 
+
     this.loadInitialContent();  //set up the inital data in th application according the state properties
   }
   componentDidMount() {
     window.addEventListener('scroll', this.loadOnScroll); // detect and updated the entire application in scroll
+    
   }
 
   componentWillUnmount() {
@@ -76,7 +108,7 @@ class App extends Component {
       console.log("data was retrieved", data)
       this.setState({ isFetching: true });
       // decrement current count by offset
-      let currcount = this.state.currentCount - this.state.offset;
+      
       let d = data.data;
       let nl = this.state.list;
       //pop off offset
@@ -90,7 +122,7 @@ class App extends Component {
       }
 
       // set state retch to false currcount list unshift
-      this.setState({ isFetching: false, currentCount: currcount, list: nl });//dont for get to add push or unshift
+      this.setState({ isFetching: false,  list: nl });//dont for get to add push or unshift
 
     }).catch((err) => {
       console.log("err", err);
@@ -116,21 +148,25 @@ class App extends Component {
     let p = new Promise(gEvents);
     p.then((data) => {
       this.setState({ isFetching: true });
-      let currcount = this.state.currentCount - this.state.offset;
+      // let currcount = this.state.currentCount - this.state.offset;
+      // console.log("add bottom curcount", this.state.currentCount,"diff", currcount );
       let nl = this.state.list;
-
+      console.log("nl",nl.length)
       // shift by offset 
       for (let i = 0; i < this.state.offset; i++) {
         nl.shift();
       }
+      console.log("nl",nl.length)
       //dont forget to pop or shift
       data = JSON.parse(data);
-      console.log("data was retrieved", data)
+      console.log("add bottomdata was retrieved", data)
       let d = data.data;
       for (let i = 0; i < d.length; i++) {
         nl.push(d[i]);
       }
-      this.setState({ isFetching: false, currentCount: currcount, list: nl });//dont for get to add push or unshift
+      console.log("add bottom  nl had been pushed", nl);
+      // console.log("add bottom count is now ", currcount);
+      this.setState({ isFetching: false,  list: nl });//dont for get to add push or unshift
 
     }).catch((err) => {
       console.log("err", err);
@@ -200,7 +236,7 @@ class App extends Component {
     });
 
   }
-
+ 
   loadOnScroll(e) {
     // console.log("this.state.currentCount", this.state.currentCount == this.state.total);
     // console.log(window.pageYOffset);
@@ -215,16 +251,26 @@ class App extends Component {
       rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)  /*or $(window).height() */
     );
     // determine if the scroll is back at the top of the window
-    let isAtTop = window.pageYOffset === 0 ? true : false;/*or $(window).height() */
+    let isAtTop = window.pageYOffset < 5  ? true : false;/*or $(window).height() */
+    
     // find if the scroll has passed the limit of the state.total
     // if so add the excess by a unit of a state.offset
+    // keep the scroll bar from staying at the exact bottom or top since we
+    // need for the user to keep scroll up or down
     let excess;
     if (isAtTop) {
-      console.log("top")
+      // console.log("top")
       excess = this.state.currentCount + this.state.offset;
+      let newDis = window.pageYOffset+20;
+      // console.log("newDis", newDis);
+      window.scroll(window.pageXOffset, newDis);
+
     } else if (isAtEnd) {
-      console.log(" bottom")
+      // console.log(" bottom")
       excess = this.state.currentCount + this.state.offset;
+      let newDis = window.pageYOffset-20;
+      // console.log("newDis", newDis);
+      window.scroll(window.pageXOffset, newDis);
     }
     // console.log("isAtEnd", isAtEnd);
     //User at the end of content. load more content
@@ -274,9 +320,10 @@ class App extends Component {
   loadInitialContent() { //get a unit if data and render the inital data
     // this.getContentFromServer(this.state.offset)
     // console.log("loading inital content");
-
-    // console.log("this.state.offset *82", this.state.offset * 82, "window.innerHeight", window.innerHeight)
-    if ((this.state.offset * 82) < window.innerHeight) {// check the height to window and check if it needs more data to full the window
+     
+    this.addData();
+    console.log("this.state.offset *82", this.state.offset * 183, "window.innerHeight", window.innerHeight)
+    if ((this.state.offset * 183) < window.innerHeight) {// check the height to window and check if it needs more data to full the window
       if (!this.state.isFetching) {
 
         this.setState({ isFetching: true });
@@ -303,29 +350,47 @@ class App extends Component {
   }
   render() {
     return (
-      <div className="App">
-        <div className="App-intro">              
-        <h2 className="App-header">Welcome to React infinite initalzation</h2>
+    <table style={styles.table}>
+        <tbody style={styles.body} >
+            <tr style={styles.f}>
+               <td style={styles.f}>
+                {/* <h2 className="App-header">Welcome to React infinite initalzation</h2> */}
+                Welcome to React infinite initalzation
+                </td>
+            </tr>
               {
                 
                 this.state.list.map((item, index) => (
-                      <div style={styles.box} key={index}>
+                <tr  key={index}>
+              <td >    
+                      <div style={styles.r} >
                         <img width="350" />
                         <h3 style={{ margin: 0 }}>name: {item.name}</h3>
                         <h3 style={{ margin: 0 }}>email:{item.email}</h3>
                         <p style={{ color: 'gray', textAlign: "center" }}>address: {item.address}</p>
                       </div>
+               </td>
+            </tr>     
                 ))
               }
-              {
-                // (this.state.currentCount !== this.state.total) ?
-                <div id="content-end" style={styles.loading} onClick={e => this.forceLoadOnScroll()}>
-                  Please wait. Loading...
-            </div>
-                // : null
-              }
-        </div>
-      </div>
+                {/* <h2 className="App-header">Welcome to React infinite initalzation</h2> */}
+            <tr><td> 
+            {
+              // (this.state.currentCount !== this.state.total) ?
+              <div id="content-end" style={styles.loading} onClick={e => this.forceLoadOnScroll()}>
+                Please wait. Loading...
+          </div>
+              // : null
+            }
+            </td></tr>
+            </tbody>
+    </table>            
+      // <div className="App">
+      //   <div className="App-intro">              
+           
+      //   </div>
+      // </div>
+      
     );
   }
 
