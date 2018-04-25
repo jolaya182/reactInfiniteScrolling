@@ -243,9 +243,9 @@ class App extends Component {
 
 
     } else {
-      if (isAtTop || isAtEnd) {
-        this.setState({ isFetching: true });
-        setTimeout(this.addData, 1000)
+      if (isAtTop || isAtEnd) { //add data to the application we you ahave reached the ends
+        this.setState({ isFetching: true });//set fetch to true so that overwhelm the application with request
+        setTimeout(this.addData, 1000) //
       };
     }
 
@@ -271,12 +271,12 @@ class App extends Component {
     return
   }
 
-  loadInitialContent() {
+  loadInitialContent() { //get a unit if data and render the inital data
     // this.getContentFromServer(this.state.offset)
     // console.log("loading inital content");
 
     // console.log("this.state.offset *82", this.state.offset * 82, "window.innerHeight", window.innerHeight)
-    if ((this.state.offset * 82) < window.innerHeight) {
+    if ((this.state.offset * 82) < window.innerHeight) {// check the height to window and check if it needs more data to full the window
       if (!this.state.isFetching) {
 
         this.setState({ isFetching: true });
