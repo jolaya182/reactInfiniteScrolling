@@ -56,7 +56,7 @@ class App extends Component {
 
   addTopData() {
     console.log("adding data at the top");
-    
+
     let gEvents = (resolve, reject) => {
       let xhr = new XMLHttpRequest();
       xhr.open("GET", "http://localhost:3001/data/" + this.state.offset, true);
@@ -86,18 +86,18 @@ class App extends Component {
       }
       // unshift returned data to the stack list 
       for (let i = 0; i < d.length; i++) {
-        nl.unshift(d[i]);        
-      } 
-      
+        nl.unshift(d[i]);
+      }
+
       // set state retch to false currcount list unshift
       this.setState({ isFetching: false, currentCount: currcount, list: nl });//dont for get to add push or unshift
-      
+
     }).catch((err) => {
       console.log("err", err);
     });
-    
+
   }
-  
+
   addBottomData() {
     console.log("adding data at the bottom");
     let gEvents = (resolve, reject) => {
@@ -118,7 +118,7 @@ class App extends Component {
       this.setState({ isFetching: true });
       let currcount = this.state.currentCount - this.state.offset;
       let nl = this.state.list;
-      
+
       // shift by offset 
       for (let i = 0; i < this.state.offset; i++) {
         nl.shift();
@@ -126,22 +126,22 @@ class App extends Component {
       //dont forget to pop or shift
       data = JSON.parse(data);
       console.log("data was retrieved", data)
-      let d = data.data;      
+      let d = data.data;
       for (let i = 0; i < d.length; i++) {
-        nl.push(d[i]);        
+        nl.push(d[i]);
       }
       this.setState({ isFetching: false, currentCount: currcount, list: nl });//dont for get to add push or unshift
 
     }).catch((err) => {
       console.log("err", err);
     });
-    
+
   }
-  
+
   addData() {
-    
+
     console.log("adding data");
-    
+
     let gEvents = (resolve, reject) => {
       let xhr = new XMLHttpRequest();
       xhr.open("GET", "http://localhost:3001/data/" + this.state.offset, true);
@@ -161,11 +161,11 @@ class App extends Component {
       console.log("data was retrieved", data)
       let currcount = this.state.currentCount + this.state.offset;
       //dont forget to pop or shift
-      
+
       let d = data.data;
       let nl = this.state.list;
       for (let i = 0; i < d.length; i++) {
-        nl.push(d[i]);       
+        nl.push(d[i]);
       }
       this.setState({ isFetching: false, currentCount: currcount, list: nl });//dont for get to add push or unshift
 
@@ -218,10 +218,10 @@ class App extends Component {
     let isAtTop = window.pageYOffset === 0 ? true : false;/*or $(window).height() */
     // find if the scroll has passed the limit of the state.total
     // if so add the excess by a unit of a state.offset
-    let excess ;
+    let excess;
     if (isAtTop) {
       console.log("top")
-      excess  = this.state.currentCount + this.state.offset;
+      excess = this.state.currentCount + this.state.offset;
     } else if (isAtEnd) {
       console.log(" bottom")
       excess = this.state.currentCount + this.state.offset;
@@ -229,7 +229,7 @@ class App extends Component {
     // console.log("isAtEnd", isAtEnd);
     //User at the end of content. load more content
     if (excess > this.state.total) {
-        console.log("excess",excess);
+      console.log("excess", excess);
       if (isAtTop) {
         // console.log("I am at the top")
         this.setState({ isFetching: true });
@@ -243,9 +243,10 @@ class App extends Component {
 
 
     } else {
-      if(isAtTop || isAtEnd){
+      if (isAtTop || isAtEnd) {
         this.setState({ isFetching: true });
-        setTimeout(this.addData, 1000)};
+        setTimeout(this.addData, 1000)
+      };
     }
 
 
@@ -303,28 +304,26 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="App-header">
-          <h2>Welcome to React infinite initalzation</h2>
-        </div>
-        <div className="App-intro">
-          {
-            this.state.list.map((item, index) => (
-              <div style={styles.box} key={index}>
-                <img width="350" />
-                <h3 style={{ margin: 0 }}>name: {item.name}</h3>
-                <h3 style={{ margin: 0 }}>email:{item.email}</h3>
-                <p style={{ color: 'gray', textAlign: "center" }}>address: {item.address}</p>
-              </div>
-            ))
-          }
-          {
-            // (this.state.currentCount !== this.state.total) ?
-              <div id="content-end" style={styles.loading} onClick={e => this.forceLoadOnScroll()}>
-                Please wait. Loading...
-            </div> 
-            // : null
-          }
-
+        <div className="App-intro">              
+        <h2 className="App-header">Welcome to React infinite initalzation</h2>
+              {
+                
+                this.state.list.map((item, index) => (
+                      <div style={styles.box} key={index}>
+                        <img width="350" />
+                        <h3 style={{ margin: 0 }}>name: {item.name}</h3>
+                        <h3 style={{ margin: 0 }}>email:{item.email}</h3>
+                        <p style={{ color: 'gray', textAlign: "center" }}>address: {item.address}</p>
+                      </div>
+                ))
+              }
+              {
+                // (this.state.currentCount !== this.state.total) ?
+                <div id="content-end" style={styles.loading} onClick={e => this.forceLoadOnScroll()}>
+                  Please wait. Loading...
+            </div>
+                // : null
+              }
         </div>
       </div>
     );
@@ -334,79 +333,6 @@ class App extends Component {
 
 export default App;
 
-const fullList = [
-  {
-    id: 1,
-    title: "Title 1",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "1.jpg"
-  },
-  {
-    id: 2,
-    title: "Title 2",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "2.jpg"
-  },
-  {
-    id: 3,
-    title: "Title 3",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "3.jpg"
-  },
-  {
-    id: 4,
-    title: "Title 4",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "4.jpg"
-  },
-  {
-    id: 5,
-    title: "Title 5",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "5.jpg"
-  },
-  {
-    id: 6,
-    title: "Title 6",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "6.jpg"
-  },
-  {
-    id: 7,
-    title: "Title 7",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "7.jpg"
-  },
-  {
-    id: 8,
-    title: "Title 8",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "8.jpg"
-  },
-  {
-    id: 9,
-    title: "Title 9",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "9.jpg"
-  },
-  {
-    id: 10,
-    title: "Title 10",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "10.jpg"
-  },
-  {
-    id: 11,
-    title: "Title 11",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "11.jpg"
-  },
-  {
-    id: 12,
-    title: "Title 12",
-    summary: "The aim of this project is to design a car using fuel cell technology.",
-    pic: "12.jpg"
-  },
-]
+
 
 ReactDom.render(<App />, document.getElementById("app"));
